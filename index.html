@@ -1,840 +1,949 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAA ADHD Fast Track Screener | Dr. Jason Olin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAA ADHD Fast Track Screener | Dr. Jason Olin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #f7f5f2;
-    --surface: #ffffff;
-    --border: #e4e0d8;
-    --text: #1a1714;
-    --text-mid: #4a4540;
-    --text-muted: #8a847a;
-    --accent: #116dff;
-    --accent-dark: #0052cc;
-    --warn: #c8500a;
-    --warn-bg: #fff5ef;
-    --warn-border: #f5c4a0;
-    --ok: #0a7a4a;
-    --ok-bg: #f0faf5;
-    --ok-border: #a0dfc0;
-    --neutral-bg: #f0eeea;
-    --radius: 10px;
-    --shadow: 0 2px 12px rgba(26,23,20,0.08);
-  }
+        :root {
+            --bg: #F1EBDF;
+            --surface: #F6F0E4;
+            --border: #C9BFA7;
+            --text: #1A1815;
+            --text-mid: #4A4640;
+            --text-muted: #7A746A;
+            --accent: #6B2A1F;
+            --accent-dark: #522015;
+            --warn: #c8500a;
+            --warn-bg: #fff5ef;
+            --warn-border: #f5c4a0;
+            --ok: #0a7a4a;
+            --ok-bg: #f0faf5;
+            --ok-border: #a0dfc0;
+            --neutral-bg: #E8DFCE;
+            --radius: 2px;
+            --shadow: 0 2px 12px rgba(26,24,21,0.06);
+        }
 
-  html { font-size: 16px; }
+        html { font-size: 16px; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 20px 60px;
-  }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 20px 60px;
+        }
 
-  .screener {
-    width: 100%;
-    max-width: 620px;
-  }
+        .screener { width: 100%; max-width: 620px; }
 
-  .screener-header {
-    text-align: center;
-    margin-bottom: 36px;
-  }
-  .screener-header h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(22px, 5vw, 30px);
-    font-weight: 400;
-    color: var(--text);
-    line-height: 1.25;
-    margin-bottom: 10px;
-  }
-  .screener-header p {
-    font-size: 15px;
-    color: var(--text-mid);
-    line-height: 1.6;
-    max-width: 480px;
-    margin: 0 auto;
-  }
+        .screener-header { text-align: center; margin-bottom: 36px; }
 
-  .progress-bar-wrap {
-    background: var(--border);
-    border-radius: 4px;
-    height: 4px;
-    margin-bottom: 32px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
+        .screener-header h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(22px, 5vw, 30px);
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.25;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 28px 24px;
-    box-shadow: var(--shadow);
-    display: none;
-    animation: fadeUp 0.3s ease forwards;
-  }
-  .card.active { display: block; }
+        .screener-header p {
+            font-size: 15px;
+            color: var(--text-mid);
+            line-height: 1.6;
+            max-width: 480px;
+            margin: 0 auto;
+        }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+        .progress-bar-wrap {
+            background: var(--border);
+            border-radius: 2px;
+            height: 4px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
 
-  .q-number {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-  }
-  .q-text {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(17px, 3.5vw, 21px);
-    font-weight: 400;
-    line-height: 1.35;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .q-sub {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.55;
-    margin-bottom: 20px;
-  }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
 
-  .options { display: flex; flex-direction: column; gap: 10px; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 28px 24px;
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeUp 0.3s ease forwards;
+        }
 
-  .option {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    background: var(--bg);
-    text-align: left;
-    width: 100%;
-    font-family: inherit;
-  }
-  .option:hover { border-color: var(--accent); background: #f0f5ff; }
-  .option.selected { border-color: var(--accent); background: #eef4ff; }
+        .card.active { display: block; }
 
-  .option-dot {
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    margin-top: 2px;
-    transition: border-color 0.15s, background 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .option:hover .option-dot { border-color: var(--accent); }
-  .option.selected .option-dot { border-color: var(--accent); background: var(--accent); }
-  .option.selected .option-dot::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-  }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
-  .option-label {
-    font-size: 14.5px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.3;
-  }
-  .option-note {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    line-height: 1.45;
-  }
+        .q-number {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
 
-  .year-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .year-btn {
-    padding: 10px 6px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    background: var(--bg);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-    color: var(--text);
-  }
-  .year-btn:hover { border-color: var(--accent); background: #f0f5ff; }
-  .year-btn.selected { border-color: var(--accent); background: var(--accent); color: white; }
-  .year-btn.earlier { grid-column: span 2; background: var(--neutral-bg); color: var(--text-mid); font-size: 13px; }
-  .year-btn.earlier:hover { border-color: var(--accent); background: #f0f5ff; color: var(--text); }
-  .year-btn.earlier.selected { background: var(--accent); color: white; }
-  .year-btn.never { grid-column: span 4; background: var(--neutral-bg); color: var(--text-mid); font-size: 13px; }
-  .year-btn.never:hover { border-color: var(--accent); background: #f0f5ff; color: var(--text); }
-  .year-btn.never.selected { background: var(--accent); color: white; }
+        .q-text {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(17px, 3.5vw, 21px);
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--text);
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
 
-  .info-box {
-    background: #f5f8ff;
-    border: 1px solid #c8d8f8;
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    color: var(--text-mid);
-    line-height: 1.55;
-    margin-top: 16px;
-  }
-  .info-box strong { color: var(--text); font-weight: 600; }
+        .q-sub {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 20px;
+        }
 
-  .warn-box {
-    background: var(--warn-bg);
-    border: 1px solid var(--warn-border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    color: #7a3010;
-    line-height: 1.55;
-    margin-top: 16px;
-  }
-  .warn-box strong { color: var(--warn); font-weight: 600; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
 
-  .card-footer {
-    margin-top: 24px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .btn-next {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, opacity 0.15s;
-    opacity: 0.4;
-    pointer-events: none;
-  }
-  .btn-next.enabled { opacity: 1; pointer-events: auto; }
-  .btn-next.enabled:hover { background: var(--accent-dark); }
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            background: var(--bg);
+            text-align: left;
+            width: 100%;
+            font-family: inherit;
+        }
 
-  .result-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px 28px;
-    box-shadow: var(--shadow);
-    display: none;
-    animation: fadeUp 0.35s ease forwards;
-  }
-  .result-card.active { display: block; }
+        .option:hover {
+            border-color: var(--accent);
+            background: #EDE7D9;
+        }
 
-  .result-icon { font-size: 36px; margin-bottom: 14px; }
-  .result-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .result-label.green { color: var(--ok); }
-  .result-label.amber { color: var(--warn); }
-  .result-label.blue { color: var(--accent); }
+        .option.selected {
+            border-color: var(--accent);
+            background: #E8DFCE;
+        }
 
-  .result-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(20px, 4vw, 26px);
-    font-weight: 400;
-    line-height: 1.3;
-    margin-bottom: 14px;
-    color: var(--text);
-  }
-  .result-body {
-    font-size: 14.5px;
-    color: var(--text-mid);
-    line-height: 1.65;
-    margin-bottom: 20px;
-  }
-  .result-body p + p { margin-top: 10px; }
+        .option-dot {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            margin-top: 2px;
+            transition: border-color 0.15s, background 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  .result-items {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 18px;
-    margin-bottom: 20px;
-  }
-  .result-items-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-  }
-  .result-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 13.5px;
-    color: var(--text-mid);
-    line-height: 1.5;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .result-item:last-child { border-bottom: none; }
-  .result-item .dot { flex-shrink: 0; margin-top: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+        .option:hover .option-dot { border-color: var(--accent); }
 
-  .btn-cta {
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-    text-decoration: none;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    transition: background 0.15s;
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-  .btn-cta:hover { background: var(--accent-dark); }
-  .btn-cta.secondary {
-    background: transparent;
-    color: var(--accent);
-    border: 1.5px solid var(--accent);
-  }
-  .btn-cta.secondary:hover { background: #eef4ff; }
+        .option.selected .option-dot {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
 
-  .restart-link {
-    display: block;
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--text-muted);
-    cursor: pointer;
-    text-align: center;
-    text-decoration: underline;
-    text-decoration-color: var(--border);
-  }
-  .restart-link:hover { color: var(--accent); }
+        .option.selected .option-dot::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+        }
 
-  .date-target {
-    background: #f5f8ff;
-    border: 1px solid #c8d8f8;
-    border-radius: 8px;
-    padding: 16px 18px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .date-target .label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
-  .date-target .target-date {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    color: var(--accent);
-  }
+        .option-label {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.3;
+        }
 
-  .stop-flying-box {
-    background: #fff8f0;
-    border: 2px solid var(--warn);
-    border-radius: 8px;
-    padding: 16px 18px;
-    margin-bottom: 20px;
-  }
-  .stop-flying-box .stop-title {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--warn);
-    margin-bottom: 6px;
-  }
-  .stop-flying-box p {
-    font-size: 13.5px;
-    color: #7a4010;
-    line-height: 1.55;
-  }
+        .option-note {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            line-height: 1.45;
+        }
 
-  @media (max-width: 480px) {
-    body { padding: 20px 14px 48px; }
-    .card, .result-card { padding: 22px 18px 20px; }
-    .year-grid { grid-template-columns: repeat(3, 1fr); }
-    .year-btn.earlier { grid-column: span 3; }
-    .year-btn.never { grid-column: span 3; }
-  }
-</style>
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .year-btn {
+            padding: 10px 6px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .year-btn:hover {
+            border-color: var(--accent);
+            background: #EDE7D9;
+        }
+
+        .year-btn.selected {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        .year-btn.earlier {
+            grid-column: span 2;
+            background: var(--neutral-bg);
+            color: var(--text-mid);
+            font-size: 13px;
+        }
+
+        .year-btn.earlier:hover {
+            border-color: var(--accent);
+            background: #EDE7D9;
+            color: var(--text);
+        }
+
+        .year-btn.earlier.selected {
+            background: var(--accent);
+            color: white;
+        }
+
+        .year-btn.never {
+            grid-column: span 4;
+            background: var(--neutral-bg);
+            color: var(--text-mid);
+            font-size: 13px;
+        }
+
+        .year-btn.never:hover {
+            border-color: var(--accent);
+            background: #EDE7D9;
+            color: var(--text);
+        }
+
+        .year-btn.never.selected {
+            background: var(--accent);
+            color: white;
+        }
+
+        .info-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.55;
+            margin-top: 16px;
+        }
+
+        .info-box strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .warn-box {
+            background: var(--warn-bg);
+            border: 1px solid var(--warn-border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #7a3010;
+            line-height: 1.55;
+            margin-top: 16px;
+        }
+
+        .warn-box strong {
+            color: var(--warn);
+            font-weight: 600;
+        }
+
+        .card-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-next {
+            background: var(--accent);
+            color: #F1EBDF;
+            border: none;
+            padding: 12px 28px;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, opacity 0.15s;
+            opacity: 0.4;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-next.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-next.enabled:hover {
+            background: var(--accent-dark);
+        }
+
+        .result-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            box-shadow: var(--shadow);
+            display: none;
+            animation: fadeUp 0.35s ease forwards;
+        }
+
+        .result-card.active { display: block; }
+
+        .result-icon { font-size: 36px; margin-bottom: 14px; }
+
+        .result-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .result-label.green { color: var(--ok); }
+        .result-label.amber { color: var(--warn); }
+        .result-label.blue  { color: var(--accent); }
+
+        .result-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 14px;
+            color: var(--text);
+            letter-spacing: -0.4px;
+        }
+
+        .result-body {
+            font-size: 14.5px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .result-body p + p { margin-top: 10px; }
+
+        .result-items {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            margin-bottom: 20px;
+        }
+
+        .result-items-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .result-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.5;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-item:last-child { border-bottom: none; }
+
+        .result-item .dot {
+            flex-shrink: 0;
+            margin-top: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: var(--accent);
+            color: #F1EBDF;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.15s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-cta:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn-cta.secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 1.5px solid var(--accent);
+        }
+
+        .btn-cta.secondary:hover {
+            background: #E8DFCE;
+        }
+
+        .restart-link {
+            display: block;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: underline;
+            text-decoration-color: var(--border);
+        }
+
+        .restart-link:hover { color: var(--accent); }
+
+        .date-target {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .date-target .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .date-target .target-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .stop-flying-box {
+            background: #fff8f0;
+            border: 2px solid var(--warn);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            margin-bottom: 20px;
+        }
+
+        .stop-flying-box .stop-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--warn);
+            margin-bottom: 6px;
+        }
+
+        .stop-flying-box p {
+            font-size: 13.5px;
+            color: #7a4010;
+            line-height: 1.55;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 20px 14px 48px; }
+            .card, .result-card { padding: 22px 18px 20px; }
+            .year-grid { grid-template-columns: repeat(3, 1fr); }
+            .year-btn.earlier { grid-column: span 3; }
+            .year-btn.never { grid-column: span 3; }
+        }
+    </style>
 </head>
 <body>
-<div class="screener">
-
-  <div class="screener-header">
-    <h1>Am I a Candidate for the ADHD Fast Track?</h1>
-    <p>Five questions to help clarify your situation. This is educational, not a clinical determination.</p>
-  </div>
-
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
-  </div>
-
-  <!-- Q1 -->
-  <div class="card active" id="q1">
-    <div class="q-number">Question 1 of 5</div>
-    <div class="q-text">Which best describes where you are right now?</div>
-    <div class="q-sub">This helps tailor the information to your specific situation.</div>
-    <div class="options">
-      <button class="option" data-q="1" data-val="pre-deferral" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">I have not yet seen an Aviation Medical Examiner, or my AME has not yet deferred me</div>
-          <div class="option-note">Includes cases where an AME flagged your ADHD history but has not submitted a deferral</div>
+    <div class="screener">
+        <div class="screener-header">
+            <h1>Am I a Candidate for the ADHD Fast Track?</h1>
+            <p>Five questions to help clarify your situation. This is educational, not a clinical determination.</p>
         </div>
-      </button>
-      <button class="option" data-q="1" data-val="faa-letter" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">I received communication from the FAA indicating I may be eligible for the ADHD Fast Track process</div>
-          <div class="option-note">FAA letters typically state that either an ADHD Fast Track or ADHD Standard Track evaluation is needed</div>
+
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
         </div>
-      </button>
-      <button class="option" data-q="1" data-val="deferred-waiting" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">I saw an AME and was deferred, and have not yet heard back from the FAA</div>
-          <div class="option-note">My application is in Oklahoma City and I am waiting for next steps</div>
+
+        <!-- Q1 -->
+        <div class="card active" id="q1">
+            <div class="q-number">Question 1 of 5</div>
+            <div class="q-text">Which best describes where you are right now?</div>
+            <div class="q-sub">This helps tailor the information to your specific situation.</div>
+            <div class="options">
+                <button class="option" data-q="1" data-val="pre-deferral" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">I have not yet seen an Aviation Medical Examiner, or my AME has not yet deferred me</div>
+                        <div class="option-note">Includes cases where an AME flagged your ADHD history but has not submitted a deferral</div>
+                    </div>
+                </button>
+                <button class="option" data-q="1" data-val="faa-letter" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">I received communication from the FAA indicating I may be eligible for the ADHD Fast Track process</div>
+                        <div class="option-note">FAA letters typically state that either an ADHD Fast Track or ADHD Standard Track evaluation is needed</div>
+                    </div>
+                </button>
+                <button class="option" data-q="1" data-val="deferred-waiting" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">I saw an AME and was deferred, and have not yet heard back from the FAA</div>
+                        <div class="option-note">My application is in Oklahoma City and I am waiting for next steps</div>
+                    </div>
+                </button>
+                <button class="option" data-q="1" data-val="current-cert" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">I currently hold a medical certificate</div>
+                        <div class="option-note">I just realized my past ADHD history may need to be addressed</div>
+                    </div>
+                </button>
+            </div>
+            <div class="card-footer">
+                <button class="btn-next" id="next1" onclick="goTo(2)">Continue</button>
+            </div>
         </div>
-      </button>
-      <button class="option" data-q="1" data-val="current-cert" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">I currently hold a medical certificate</div>
-          <div class="option-note">I just realized my past ADHD history may need to be addressed</div>
+
+        <!-- Q2 -->
+        <div class="card" id="q2">
+            <div class="q-number">Question 2 of 5</div>
+            <div class="q-text">When was the last date you took an ADHD medication, meaning the last pill or tablet you actually consumed?</div>
+            <div class="q-sub">Select the year that best applies. If you are unsure, choose the most recent possible year.</div>
+            <div class="year-grid" id="yearGrid"></div>
+            <div id="medInfoBox" style="display:none"></div>
+            <div class="card-footer">
+                <button class="btn-next" id="next2" onclick="goTo(3)">Continue</button>
+            </div>
         </div>
-      </button>
-    </div>
-    <div class="card-footer">
-      <button class="btn-next" id="next1" onclick="goTo(2)">Continue</button>
-    </div>
-  </div>
 
-  <!-- Q2 -->
-  <div class="card" id="q2">
-    <div class="q-number">Question 2 of 5</div>
-    <div class="q-text">When was the last date you took an ADHD medication, meaning the last pill or tablet you actually consumed?</div>
-    <div class="q-sub">Select the year that best applies. If you are unsure, choose the most recent possible year.</div>
-    <div class="year-grid" id="yearGrid"></div>
-    <div id="medInfoBox" style="display:none"></div>
-    <div class="card-footer">
-      <button class="btn-next" id="next2" onclick="goTo(3)">Continue</button>
-    </div>
-  </div>
-
-  <!-- Q3 -->
-  <div class="card" id="q3">
-    <div class="q-number">Question 3 of 5</div>
-    <div class="q-text">Besides ADHD, have you ever been diagnosed with any neurological or mental health condition?</div>
-    <div class="q-sub">Include past diagnoses, even if you consider them resolved.</div>
-    <div class="options">
-      <button class="option" data-q="3" data-val="none" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">No, ADHD is my only diagnosis</div>
+        <!-- Q3 -->
+        <div class="card" id="q3">
+            <div class="q-number">Question 3 of 5</div>
+            <div class="q-text">Besides ADHD, have you ever been diagnosed with any neurological or mental health condition?</div>
+            <div class="q-sub">Include past diagnoses, even if you consider them resolved.</div>
+            <div class="options">
+                <button class="option" data-q="3" data-val="none" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">No, ADHD is my only diagnosis</div>
+                    </div>
+                </button>
+                <button class="option" data-q="3" data-val="learning" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Yes, a learning disorder</div>
+                        <div class="option-note">Such as dyslexia, dyscalculia, or a processing disorder</div>
+                    </div>
+                </button>
+                <button class="option" data-q="3" data-val="anxiety-depression" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Yes, anxiety or depression</div>
+                        <div class="option-note">Including past or current treatment</div>
+                    </div>
+                </button>
+                <button class="option" data-q="3" data-val="neurologic" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Yes, a neurological condition</div>
+                        <div class="option-note">Such as epilepsy, MS, or a significant TBI/concussion. A documented concussion without symptoms is generally acceptable</div>
+                    </div>
+                </button>
+                <button class="option" data-q="3" data-val="other" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Yes, something else</div>
+                        <div class="option-note">Including bipolar disorder, PTSD, substance history, autism spectrum, or anything not listed above</div>
+                    </div>
+                </button>
+            </div>
+            <div class="card-footer">
+                <button class="btn-next" id="next3" onclick="goTo(4)">Continue</button>
+            </div>
         </div>
-      </button>
-      <button class="option" data-q="3" data-val="learning" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Yes, a learning disorder</div>
-          <div class="option-note">Such as dyslexia, dyscalculia, or a processing disorder</div>
+
+        <!-- Q4 -->
+        <div class="card" id="q4">
+            <div class="q-number">Question 4 of 5</div>
+            <div class="q-text">Over the past four years, how would you describe your work or academic performance and your daily functioning overall?</div>
+            <div class="q-sub">The FAA looks for evidence that ADHD is in remission, not just that medication stopped.</div>
+            <div class="options">
+                <button class="option" data-q="4" data-val="stable" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Generally stable and consistent</div>
+                        <div class="option-note">Work or school has been steady, functioning well day-to-day</div>
+                    </div>
+                </button>
+                <button class="option" data-q="4" data-val="some-ups-downs" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Some ups and downs, but nothing major</div>
+                        <div class="option-note">A rough patch, a job change, or a difficult semester, but overall on track</div>
+                    </div>
+                </button>
+                <button class="option" data-q="4" data-val="chaotic" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Fairly chaotic or inconsistent</div>
+                        <div class="option-note">Multiple job losses, significant academic struggles, or a pattern of instability</div>
+                    </div>
+                </button>
+            </div>
+            <div class="card-footer">
+                <button class="btn-next" id="next4" onclick="goTo(5)">Continue</button>
+            </div>
         </div>
-      </button>
-      <button class="option" data-q="3" data-val="anxiety-depression" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Yes, anxiety or depression</div>
-          <div class="option-note">Including past or current treatment</div>
+
+        <!-- Q5 -->
+        <div class="card" id="q5">
+            <div class="q-number">Question 5 of 5</div>
+            <div class="q-text">Do you have access to pharmacy records covering the past four years?</div>
+            <div class="q-sub">The FAA requires pharmacy records as part of the Fast Track documentation package. This includes records showing no fills, not just records of fills.</div>
+            <div class="options">
+                <button class="option" data-q="5" data-val="yes" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Yes, I can obtain them</div>
+                    </div>
+                </button>
+                <button class="option" data-q="5" data-val="not-yet" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Not yet, but I know how to get them</div>
+                    </div>
+                </button>
+                <button class="option" data-q="5" data-val="unsure" onclick="selectOption(this)">
+                    <div class="option-dot"></div>
+                    <div class="option-content">
+                        <div class="option-label">Unsure how to obtain them</div>
+                        <div class="option-note">Records can be requested directly from your pharmacy and are often documented in your medical records as well</div>
+                    </div>
+                </button>
+            </div>
+            <div class="card-footer">
+                <button class="btn-next" id="next5" onclick="showResult()">See My Results</button>
+            </div>
         </div>
-      </button>
-      <button class="option" data-q="3" data-val="neurologic" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Yes, a neurological condition</div>
-          <div class="option-note">Such as epilepsy, MS, or a significant TBI/concussion. A documented concussion without symptoms is generally acceptable</div>
+
+        <!-- RESULTS -->
+
+        <!-- Stop flying -->
+        <div class="result-card" id="result-stop-flying">
+            <div class="result-icon">&#9888;&#65039;</div>
+            <div class="result-label amber">Action Required First</div>
+            <div class="result-title">You need to pause flying while this gets sorted out.</div>
+            <div class="stop-flying-box">
+                <div class="stop-title">Stop flying or controlling until cleared</div>
+                <p>This is a fixable situation, but it requires following the correct order of steps. Continuing to fly before addressing your ADHD history creates a much more serious problem than the underlying issue itself.</p>
+            </div>
+            <div class="result-body">
+                <p>Holding a medical certificate while having an undisclosed ADHD history is not uncommon, and the FAA has a defined pathway to resolve it. The Fast Track process may still apply to you if you have been off medication for four or more years and meet the other criteria.</p>
+                <p>The most important immediate step is to stop flying or controlling and contact your AME or Regional Flight Surgeon. From there, a consultation can walk you through the correct sequence of steps.</p>
+            </div>
+            <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-      <button class="option" data-q="3" data-val="other" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Yes, something else</div>
-          <div class="option-note">Including bipolar disorder, PTSD, substance history, autism spectrum, or anything not listed above</div>
+
+        <!-- Not yet eligible -->
+        <div class="result-card" id="result-not-yet">
+            <div class="result-icon">&#128197;</div>
+            <div class="result-label blue">Not Yet Eligible</div>
+            <div class="result-title">You are not yet eligible for Fast Track, but you have a target date.</div>
+            <div class="date-target">
+                <div class="label">Your earliest estimated Fast Track eligibility</div>
+                <div class="target-date" id="eligibilityDate">--</div>
+            </div>
+            <div class="result-body">
+                <p>The FAA's four-year clock runs from the last date a prescription was dispensed in your name based on your pharmacy record. This is not the date you stopped taking the medication. The two dates are sometimes different.</p>
+                <p>In the meantime, the most useful thing you can do is gather documentation and make sure your records are consistent with Fast Track criteria. Planning ahead now means a much smoother process when your eligibility date arrives.</p>
+            </div>
+            <div class="info-box">
+                <strong>One important note:</strong> Pull your pharmacy records now so there are no surprises about the actual clock start date. Some records show a fill date that is later than when the medication was actually consumed.
+            </div>
+            <div style="margin-top: 20px;">
+                <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
+            </div>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-    </div>
-    <div class="card-footer">
-      <button class="btn-next" id="next3" onclick="goTo(4)">Continue</button>
-    </div>
-  </div>
 
-  <!-- Q4 -->
-  <div class="card" id="q4">
-    <div class="q-number">Question 4 of 5</div>
-    <div class="q-text">Over the past four years, how would you describe your work or academic performance and your daily functioning overall?</div>
-    <div class="q-sub">The FAA looks for evidence that ADHD is in remission, not just that medication stopped.</div>
-    <div class="options">
-      <button class="option" data-q="4" data-val="stable" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Generally stable and consistent</div>
-          <div class="option-note">Work or school has been steady, functioning well day-to-day</div>
+        <!-- Complexity -->
+        <div class="result-card" id="result-complex">
+            <div class="result-icon">&#128196;</div>
+            <div class="result-label amber">Some Complexity to Review</div>
+            <div class="result-title">Your situation has factors that need clinical review before moving forward.</div>
+            <div class="result-body">
+                <p>This does not mean you are ineligible for Fast Track. It means one or more aspects of your history need to be looked at carefully before that determination can be made. Some of these situations are more manageable than people expect.</p>
+            </div>
+            <div class="result-items" id="complexFlags">
+                <div class="result-items-title">Items to discuss in a consultation</div>
+            </div>
+            <div class="result-body">
+                <p>A 15-minute consultation is the right next step. It is designed to clarify what applies to your situation before any evaluation is scheduled.</p>
+            </div>
+            <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-      <button class="option" data-q="4" data-val="some-ups-downs" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Some ups and downs, but nothing major</div>
-          <div class="option-note">A rough patch, a job change, or a difficult semester, but overall on track</div>
+
+        <!-- Deferred -->
+        <div class="result-card" id="result-deferred">
+            <div class="result-icon">&#128203;</div>
+            <div class="result-label amber">Deferred but Still on Track</div>
+            <div class="result-title">A deferral does not mean denial. Fast Track is likely still available to you.</div>
+            <div class="result-body">
+                <p>When an AME defers your application, the FAA takes over the review timeline. That said, if you meet the Fast Track criteria, the pathway is still the same. The key difference is that the documentation package now needs to be a direct response to the FAA's request.</p>
+                <p>This is where working with an evaluator familiar with FAA expectations makes a real difference. An incomplete or misformatted submission at this stage adds months to the process.</p>
+            </div>
+            <div class="result-items">
+                <div class="result-items-title">Recommended next steps</div>
+                <div class="result-item"><div class="dot"></div><div>Do not schedule any additional AME appointments before completing the Fast Track evaluation</div></div>
+                <div class="result-item"><div class="dot"></div><div>Gather pharmacy records, academic records, and your personal statement now</div></div>
+                <div class="result-item"><div class="dot"></div><div>Bring a copy of the FAA deferral letter to the consultation</div></div>
+            </div>
+            <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-      <button class="option" data-q="4" data-val="chaotic" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Fairly chaotic or inconsistent</div>
-          <div class="option-note">Multiple job losses, significant academic struggles, or a pattern of instability</div>
+
+        <!-- Straightforward -->
+        <div class="result-card" id="result-straightforward">
+            <div class="result-icon">&#9989;</div>
+            <div class="result-label green">Looks Straightforward</div>
+            <div class="result-title">Your situation appears consistent with Fast Track eligibility.</div>
+            <div class="result-body">
+                <p>Based on your answers, you appear to meet the core Fast Track criteria. Eligibility is confirmed through a full record review and clinical interview, but nothing here raises a flag that would change the pathway.</p>
+            </div>
+            <div class="result-items">
+                <div class="result-items-title">What to expect next</div>
+                <div class="result-item"><div class="dot"></div><div>Schedule a 15-minute consultation to confirm eligibility and start the process</div></div>
+                <div class="result-item"><div class="dot"></div><div>Begin gathering pharmacy records, academic transcripts, and any prior evaluations</div></div>
+                <div class="result-item"><div class="dot"></div><div>Complete the evaluation before your AME appointment, not after</div></div>
+                <div class="result-item"><div class="dot"></div><div>Reports are delivered within 7 days of the evaluation appointment</div></div>
+            </div>
+            <div id="docNote" class="info-box" style="display:none">
+                <strong>One thing to sort out first:</strong> Gathering your pharmacy records is an important early step. Records can be requested directly from your pharmacy and are often documented in your medical records as well. A consultation can walk you through this.
+            </div>
+            <div style="margin-top: 20px;">
+                <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
+                <a href="https://www.jasonolinphd.com/adhd-faa-fast-track" class="btn-cta secondary" target="_parent">Learn More</a>
+            </div>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-    </div>
-    <div class="card-footer">
-      <button class="btn-next" id="next4" onclick="goTo(5)">Continue</button>
-    </div>
-  </div>
 
-  <!-- Q5 -->
-  <div class="card" id="q5">
-    <div class="q-number">Question 5 of 5</div>
-    <div class="q-text">Do you have access to pharmacy records covering the past four years?</div>
-    <div class="q-sub">The FAA requires pharmacy records as part of the Fast Track documentation package. This includes records showing no fills, not just records of fills.</div>
-    <div class="options">
-      <button class="option" data-q="5" data-val="yes" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Yes, I can obtain them</div>
+        <!-- Wait for FAA -->
+        <div class="result-card" id="result-wait">
+            <div class="result-icon">&#9203;</div>
+            <div class="result-label blue">Wait for the FAA Letter</div>
+            <div class="result-title">The right next step is to wait for communication from the FAA before doing anything.</div>
+            <div class="result-body">
+                <p>Once an AME submits a deferral, the FAA takes over the review. Acting before receiving their guidance, including scheduling an evaluation, can create confusion and may not address what the FAA actually needs.</p>
+                <p>When the letter arrives, it will specify what type of evaluation or documentation is required. At that point the pathway becomes clear and moving quickly will matter. Having your records organized now is a good use of the waiting period.</p>
+            </div>
+            <div class="result-items">
+                <div class="result-items-title">Useful things to do while you wait</div>
+                <div class="result-item"><div class="dot"></div><div>Pull your pharmacy records covering the past four years</div></div>
+                <div class="result-item"><div class="dot"></div><div>Gather academic transcripts, prior evaluations, and any relevant medical records</div></div>
+                <div class="result-item"><div class="dot"></div><div>Review the FAA ADHD Fast Track overview so you understand the process before the letter arrives</div></div>
+            </div>
+            <div class="info-box">
+                Once you receive the FAA letter, a consultation will help clarify whether Fast Track or Standard Track applies to your situation and what to do next.
+            </div>
+            <div style="margin-top: 20px;">
+                <a href="https://www.jasonolinphd.com/adhd-faa-fast-track" class="btn-cta" target="_parent">Review the Fast Track Overview</a>
+            </div>
+            <span class="restart-link" onclick="restart()">Start over</span>
         </div>
-      </button>
-      <button class="option" data-q="5" data-val="not-yet" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Not yet, but I know how to get them</div>
-        </div>
-      </button>
-      <button class="option" data-q="5" data-val="unsure" onclick="selectOption(this)">
-        <div class="option-dot"></div>
-        <div class="option-content">
-          <div class="option-label">Unsure how to obtain them</div>
-          <div class="option-note">Records can be requested directly from your pharmacy and are often documented in your medical records as well</div>
-        </div>
-      </button>
     </div>
-    <div class="card-footer">
-      <button class="btn-next" id="next5" onclick="showResult()">See My Results</button>
-    </div>
-  </div>
 
-  <!-- RESULTS -->
+    <script>
+        const answers = { q1: null, q2: null, q3: null, q4: null, q5: null };
+        const currentYear = new Date().getFullYear();
 
-  <!-- Stop flying -->
-  <div class="result-card" id="result-stop-flying">
-    <div class="result-icon">&#9888;&#65039;</div>
-    <div class="result-label amber">Action Required First</div>
-    <div class="result-title">You need to pause flying while this gets sorted out.</div>
-    <div class="stop-flying-box">
-      <div class="stop-title">Stop flying or controlling until cleared</div>
-      <p>This is a fixable situation, but it requires following the correct order of steps. Continuing to fly before addressing your ADHD history creates a much more serious problem than the underlying issue itself.</p>
-    </div>
-    <div class="result-body">
-      <p>Holding a medical certificate while having an undisclosed ADHD history is not uncommon, and the FAA has a defined pathway to resolve it. The Fast Track process may still apply to you if you have been off medication for four or more years and meet the other criteria.</p>
-      <p>The most important immediate step is to stop flying or controlling and contact your AME or Regional Flight Surgeon. From there, a consultation can walk you through the correct sequence of steps.</p>
-    </div>
-    <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+        function buildYearGrid() {
+            const grid = document.getElementById('yearGrid');
+            grid.innerHTML = '';
+            [currentYear, currentYear-1, currentYear-2, currentYear-3, currentYear-4, currentYear-5].forEach(y => {
+                const btn = document.createElement('button');
+                btn.className = 'year-btn';
+                btn.textContent = y;
+                btn.dataset.val = y;
+                btn.onclick = () => selectYear(btn, y);
+                grid.appendChild(btn);
+            });
+            const earlier = document.createElement('button');
+            earlier.className = 'year-btn earlier';
+            earlier.textContent = 'Before ' + (currentYear - 5);
+            earlier.dataset.val = 'earlier';
+            earlier.onclick = () => selectYear(earlier, 'earlier');
+            grid.appendChild(earlier);
 
-  <!-- Not yet eligible -->
-  <div class="result-card" id="result-not-yet">
-    <div class="result-icon">&#128197;</div>
-    <div class="result-label blue">Not Yet Eligible</div>
-    <div class="result-title">You are not yet eligible for Fast Track, but you have a target date.</div>
-    <div class="date-target">
-      <div class="label">Your earliest estimated Fast Track eligibility</div>
-      <div class="target-date" id="eligibilityDate">--</div>
-    </div>
-    <div class="result-body">
-      <p>The FAA's four-year clock runs from the last date a prescription was dispensed in your name based on your pharmacy record. This is not the date you stopped taking the medication. The two dates are sometimes different.</p>
-      <p>In the meantime, the most useful thing you can do is gather documentation and make sure your records are consistent with Fast Track criteria. Planning ahead now means a much smoother process when your eligibility date arrives.</p>
-    </div>
-    <div class="info-box">
-      <strong>One important note:</strong> Pull your pharmacy records now so there are no surprises about the actual clock start date. Some records show a fill date that is later than when the medication was actually consumed.
-    </div>
-    <div style="margin-top: 20px;">
-      <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
-    </div>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+            const never = document.createElement('button');
+            never.className = 'year-btn never';
+            never.textContent = 'I was never prescribed ADHD medication';
+            never.dataset.val = 'never';
+            never.onclick = () => selectYear(never, 'never');
+            grid.appendChild(never);
+        }
 
-  <!-- Complexity -->
-  <div class="result-card" id="result-complex">
-    <div class="result-icon">&#128196;</div>
-    <div class="result-label amber">Some Complexity to Review</div>
-    <div class="result-title">Your situation has factors that need clinical review before moving forward.</div>
-    <div class="result-body">
-      <p>This does not mean you are ineligible for Fast Track. It means one or more aspects of your history need to be looked at carefully before that determination can be made. Some of these situations are more manageable than people expect.</p>
-    </div>
-    <div class="result-items" id="complexFlags">
-      <div class="result-items-title">Items to discuss in a consultation</div>
-    </div>
-    <div class="result-body">
-      <p>A free 15-minute consultation is the right next step. It is designed to clarify what applies to your situation before any evaluation is scheduled.</p>
-    </div>
-    <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Free Consultation</a>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+        function selectYear(btn, val) {
+            document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            answers.q2 = val;
 
-  <!-- Deferred -->
-  <div class="result-card" id="result-deferred">
-    <div class="result-icon">&#128203;</div>
-    <div class="result-label amber">Deferred but Still on Track</div>
-    <div class="result-title">A deferral does not mean denial. Fast Track is likely still available to you.</div>
-    <div class="result-body">
-      <p>When an AME defers your application, the FAA takes over the review timeline. That said, if you meet the Fast Track criteria, the pathway is still the same. The key difference is that the documentation package now needs to be a direct response to the FAA's request.</p>
-      <p>This is where working with an evaluator familiar with FAA expectations makes a real difference. An incomplete or misformatted submission at this stage adds months to the process.</p>
-    </div>
-    <div class="result-items">
-      <div class="result-items-title">Recommended next steps</div>
-      <div class="result-item"><div class="dot"></div><div>Do not schedule any additional AME appointments before completing the Fast Track evaluation</div></div>
-      <div class="result-item"><div class="dot"></div><div>Gather pharmacy records, academic records, and your personal statement now</div></div>
-      <div class="result-item"><div class="dot"></div><div>Bring a copy of the FAA deferral letter to the consultation</div></div>
-    </div>
-    <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Consultation</a>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+            const box = document.getElementById('medInfoBox');
+            const yearsAgo = (val === 'earlier' || val === 'never') ? 99 : (currentYear - parseInt(val));
+            const eligYear = parseInt(val) + 4;
 
-  <!-- Straightforward -->
-  <div class="result-card" id="result-straightforward">
-    <div class="result-icon">&#9989;</div>
-    <div class="result-label green">Looks Straightforward</div>
-    <div class="result-title">Your situation appears consistent with Fast Track eligibility.</div>
-    <div class="result-body">
-      <p>Based on your answers, you appear to meet the core Fast Track criteria. Eligibility is confirmed through a full record review and clinical interview, but nothing here raises a flag that would change the pathway.</p>
-    </div>
-    <div class="result-items">
-      <div class="result-items-title">What to expect next</div>
-      <div class="result-item"><div class="dot"></div><div>Schedule a free 15-minute consultation to confirm eligibility and start the process</div></div>
-      <div class="result-item"><div class="dot"></div><div>Begin gathering pharmacy records, academic transcripts, and any prior evaluations</div></div>
-      <div class="result-item"><div class="dot"></div><div>Complete the evaluation before your AME appointment, not after</div></div>
-      <div class="result-item"><div class="dot"></div><div>Reports are delivered within 7 days of the evaluation appointment</div></div>
-    </div>
-    <div id="docNote" class="info-box" style="display:none">
-      <strong>One thing to sort out first:</strong> Gathering your pharmacy records is an important early step. Records can be requested directly from your pharmacy and are often documented in your medical records as well. A consultation can walk you through this.
-    </div>
-    <div style="margin-top: 20px;">
-      <a href="https://www.jasonolinphd.com/contact" class="btn-cta" target="_parent">Schedule a Free Consultation</a>
-      <a href="https://www.jasonolinphd.com/adhd-faa-fast-track" class="btn-cta secondary" target="_parent">Learn More</a>
-    </div>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+            if (val === 'never') {
+                box.className = 'info-box';
+                box.innerHTML = '<strong>No medication history</strong> is a good starting point for Fast Track. Documentation confirming this is still required, typically through pharmacy records and your personal statement.';
+            } else if (val === 'earlier') {
+                box.className = 'info-box';
+                box.innerHTML = 'More than five years ago puts you well past the four-year threshold. Timing is not a barrier here. Documentation confirming the gap will still be required.';
+            } else if (yearsAgo < 4) {
+                box.className = 'warn-box';
+                box.innerHTML = '<strong>Important:</strong> If ' + val + ' is the year of your last dispensed prescription, you are not yet eligible for Fast Track. The FAA\'s four-year clock runs from the last dispensed fill, not from when you stopped taking the pills. Your earliest estimated eligibility window opens around <strong>early ' + eligYear + '</strong>.';
+            } else {
+                box.className = 'info-box';
+                box.innerHTML = 'Four or more years since your last fill puts you past the medication timeline threshold. Keep in mind the FAA uses your pharmacy record to confirm this date, not self-report. Pull your records now to make sure the dates match your recollection.';
+            }
+            box.style.display = 'block';
+            document.getElementById('next2').classList.add('enabled');
+        }
 
-  <!-- Wait for FAA -->
-  <div class="result-card" id="result-wait">
-    <div class="result-icon">&#9203;</div>
-    <div class="result-label blue">Wait for the FAA Letter</div>
-    <div class="result-title">The right next step is to wait for communication from the FAA before doing anything.</div>
-    <div class="result-body">
-      <p>Once an AME submits a deferral, the FAA takes over the review. Acting before receiving their guidance, including scheduling an evaluation, can create confusion and may not address what the FAA actually needs.</p>
-      <p>When the letter arrives, it will specify what type of evaluation or documentation is required. At that point the pathway becomes clear and moving quickly will matter. Having your records organized now is a good use of the waiting period.</p>
-    </div>
-    <div class="result-items">
-      <div class="result-items-title">Useful things to do while you wait</div>
-      <div class="result-item"><div class="dot"></div><div>Pull your pharmacy records covering the past four years</div></div>
-      <div class="result-item"><div class="dot"></div><div>Gather academic transcripts, prior evaluations, and any relevant medical records</div></div>
-      <div class="result-item"><div class="dot"></div><div>Review the FAA ADHD Fast Track overview so you understand the process before the letter arrives</div></div>
-    </div>
-    <div class="info-box">
-      Once you receive the FAA letter, a consultation will help clarify whether Fast Track or Standard Track applies to your situation and what to do next.
-    </div>
-    <div style="margin-top: 20px;">
-      <a href="https://www.jasonolinphd.com/adhd-faa-fast-track" class="btn-cta" target="_parent">Review the Fast Track Overview</a>
-    </div>
-    <span class="restart-link" onclick="restart()">Start over</span>
-  </div>
+        function selectOption(btn) {
+            const q = btn.dataset.q;
+            document.querySelectorAll(`.option[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            answers['q' + q] = btn.dataset.val;
+            document.getElementById('next' + q).classList.add('enabled');
+        }
 
-</div>
+        function goTo(step) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById('q' + step).classList.add('active');
+            document.getElementById('progressBar').style.width = (((step - 1) / 5) * 100) + '%';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-<script>
-  const answers = { q1: null, q2: null, q3: null, q4: null, q5: null };
-  const currentYear = new Date().getFullYear();
+        function showResult() {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById('progressBar').style.width = '100%';
 
-  function buildYearGrid() {
-    const grid = document.getElementById('yearGrid');
-    grid.innerHTML = '';
-    [currentYear, currentYear-1, currentYear-2, currentYear-3, currentYear-4, currentYear-5].forEach(y => {
-      const btn = document.createElement('button');
-      btn.className = 'year-btn';
-      btn.textContent = y;
-      btn.dataset.val = y;
-      btn.onclick = () => selectYear(btn, y);
-      grid.appendChild(btn);
-    });
-    const earlier = document.createElement('button');
-    earlier.className = 'year-btn earlier';
-    earlier.textContent = 'Before ' + (currentYear - 5);
-    earlier.dataset.val = 'earlier';
-    earlier.onclick = () => selectYear(earlier, 'earlier');
-    grid.appendChild(earlier);
+            const { q1, q2, q3, q4, q5 } = answers;
 
-    const never = document.createElement('button');
-    never.className = 'year-btn never';
-    never.textContent = 'I was never prescribed ADHD medication';
-    never.dataset.val = 'never';
-    never.onclick = () => selectYear(never, 'never');
-    grid.appendChild(never);
-  }
+            if (q1 === 'current-cert') { show('result-stop-flying'); return; }
+            if (q1 === 'deferred-waiting') { show('result-wait'); return; }
+            if (q1 === 'faa-letter') { show('result-deferred'); return; }
 
-  function selectYear(btn, val) {
-    document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    answers.q2 = val;
+            const yearsAgo = (q2 === 'earlier' || q2 === 'never') ? 99 : (currentYear - parseInt(q2));
+            if (q2 !== 'earlier' && q2 !== 'never' && yearsAgo < 4) {
+                document.getElementById('eligibilityDate').textContent = 'Around early ' + (parseInt(q2) + 4);
+                show('result-not-yet');
+                return;
+            }
 
-    const box = document.getElementById('medInfoBox');
-    const yearsAgo = (val === 'earlier' || val === 'never') ? 99 : (currentYear - parseInt(val));
-    const eligYear = parseInt(val) + 4;
+            const flags = [];
+            if (q3 === 'learning') flags.push('A learning disorder diagnosis (such as dyslexia or dyscalculia) appears on the Fast Track summary form and typically routes cases toward a more comprehensive evaluation. Whether this applies to you depends on the specifics of your history.');
+            if (q3 === 'anxiety-depression') flags.push('A history of anxiety or depression may still be compatible with a Fast Track pathway if it meets the FAA\'s separate Anxiety and Depression Fast Track criteria. This needs to be reviewed in a consultation before moving forward.');
+            if (q3 === 'neurologic') flags.push('A neurological condition beyond concussion history generally requires review before Fast Track eligibility can be confirmed. The specifics of the diagnosis and timeline matter.');
+            if (q3 === 'other') flags.push('An additional diagnosis outside of ADHD needs clinical review. Some conditions are compatible with the Fast Track pathway and others are not. A consultation will clarify which category your situation falls into.');
+            if (q4 === 'chaotic') flags.push('A pattern of instability over the past four years may suggest to the FAA that ADHD symptoms are not fully in remission. This is an important topic to work through before submitting documentation.');
+            if (q4 === 'some-ups-downs') flags.push('Some ups and downs are common and often explainable given age and life circumstances. A consultation can help assess how your specific history is likely to read in a Fast Track review context.');
 
-    if (val === 'never') {
-      box.className = 'info-box';
-      box.innerHTML = '<strong>No medication history</strong> is a good starting point for Fast Track. Documentation confirming this is still required, typically through pharmacy records and your personal statement.';
-    } else if (val === 'earlier') {
-      box.className = 'info-box';
-      box.innerHTML = 'More than five years ago puts you well past the four-year threshold. Timing is not a barrier here. Documentation confirming the gap will still be required.';
-    } else if (yearsAgo < 4) {
-      box.className = 'warn-box';
-      box.innerHTML = '<strong>Important:</strong> If ' + val + ' is the year of your last dispensed prescription, you are not yet eligible for Fast Track. The FAA\'s four-year clock runs from the last dispensed fill, not from when you stopped taking the pills. Your earliest estimated eligibility window opens around <strong>early ' + eligYear + '</strong>.';
-    } else {
-      box.className = 'info-box';
-      box.innerHTML = 'Four or more years since your last fill puts you past the medication timeline threshold. Keep in mind the FAA uses your pharmacy record to confirm this date, not self-report. Pull your records now to make sure the dates match your recollection.';
-    }
-    box.style.display = 'block';
-    document.getElementById('next2').classList.add('enabled');
-  }
+            if (flags.length > 0) {
+                const container = document.getElementById('complexFlags');
+                container.innerHTML = '<div class="result-items-title">Items to discuss in a consultation</div>';
+                flags.forEach(f => {
+                    container.innerHTML += `<div class="result-item"><div class="dot"></div><div>${f}</div></div>`;
+                });
+                show('result-complex');
+                return;
+            }
 
-  function selectOption(btn) {
-    const q = btn.dataset.q;
-    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    answers['q' + q] = btn.dataset.val;
-    document.getElementById('next' + q).classList.add('enabled');
-  }
+            if (q5 === 'unsure' || q5 === 'not-yet') {
+                document.getElementById('docNote').style.display = 'block';
+            }
+            show('result-straightforward');
+        }
 
-  function goTo(step) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-    document.getElementById('q' + step).classList.add('active');
-    document.getElementById('progressBar').style.width = (((step - 1) / 5) * 100) + '%';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+        function show(id) {
+            document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-  function showResult() {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-    document.getElementById('progressBar').style.width = '100%';
-    const { q1, q2, q3, q4, q5 } = answers;
+        function restart() {
+            Object.keys(answers).forEach(k => answers[k] = null);
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.btn-next').forEach(b => b.classList.remove('enabled'));
+            document.getElementById('medInfoBox').style.display = 'none';
+            document.getElementById('docNote').style.display = 'none';
+            document.getElementById('progressBar').style.width = '0%';
+            goTo(1);
+        }
 
-    if (q1 === 'current-cert') { show('result-stop-flying'); return; }
+        buildYearGrid();
 
-    if (q1 === 'deferred-waiting') { show('result-wait'); return; }
-
-    if (q1 === 'faa-letter') { show('result-deferred'); return; }
-
-    const yearsAgo = (q2 === 'earlier' || q2 === 'never') ? 99 : (currentYear - parseInt(q2));
-    if (q2 !== 'earlier' && q2 !== 'never' && yearsAgo < 4) {
-      document.getElementById('eligibilityDate').textContent = 'Around early ' + (parseInt(q2) + 4);
-      show('result-not-yet');
-      return;
-    }
-
-    const flags = [];
-    if (q3 === 'learning') flags.push('A learning disorder diagnosis (such as dyslexia or dyscalculia) appears on the Fast Track summary form and typically routes cases toward a more comprehensive evaluation. Whether this applies to you depends on the specifics of your history.');
-    if (q3 === 'anxiety-depression') flags.push('A history of anxiety or depression may still be compatible with a Fast Track pathway if it meets the FAA\'s separate Anxiety and Depression Fast Track criteria. This needs to be reviewed in a consultation before moving forward.');
-    if (q3 === 'neurologic') flags.push('A neurological condition beyond concussion history generally requires review before Fast Track eligibility can be confirmed. The specifics of the diagnosis and timeline matter.');
-    if (q3 === 'other') flags.push('An additional diagnosis outside of ADHD needs clinical review. Some conditions are compatible with the Fast Track pathway and others are not. A consultation will clarify which category your situation falls into.');
-    if (q4 === 'chaotic') flags.push('A pattern of instability over the past four years may suggest to the FAA that ADHD symptoms are not fully in remission. This is an important topic to work through before submitting documentation.');
-    if (q4 === 'some-ups-downs') flags.push('Some ups and downs are common and often explainable given age and life circumstances. A consultation can help assess how your specific history is likely to read in a Fast Track review context.');
-
-    if (flags.length > 0) {
-      const container = document.getElementById('complexFlags');
-      container.innerHTML = '<div class="result-items-title">Items to discuss in a consultation</div>';
-      flags.forEach(f => {
-        container.innerHTML += `<div class="result-item"><div class="dot"></div><div>${f}</div></div>`;
-      });
-      show('result-complex');
-      return;
-    }
-
-    if (q5 === 'unsure' || q5 === 'not-yet') {
-      document.getElementById('docNote').style.display = 'block';
-    }
-    show('result-straightforward');
-  }
-
-  function show(id) {
-    document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function restart() {
-    Object.keys(answers).forEach(k => answers[k] = null);
-    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-    document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('selected'));
-    document.querySelectorAll('.result-card').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.btn-next').forEach(b => b.classList.remove('enabled'));
-    document.getElementById('medInfoBox').style.display = 'none';
-    document.getElementById('docNote').style.display = 'none';
-    document.getElementById('progressBar').style.width = '0%';
-    goTo(1);
-  }
-
-  buildYearGrid();
-
-  function notifyHeight() {
-    const h = document.body.scrollHeight;
-    window.parent.postMessage({ type: 'screenerHeight', height: h }, '*');
-  }
-  window.addEventListener('load', notifyHeight);
-  const observer = new MutationObserver(notifyHeight);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-</script>
+        function notifyHeight() {
+            const h = document.body.scrollHeight;
+            window.parent.postMessage({ type: 'screenerHeight', height: h }, '*');
+        }
+        window.addEventListener('load', notifyHeight);
+        const observer = new MutationObserver(notifyHeight);
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    </script>
 </body>
 </html>
